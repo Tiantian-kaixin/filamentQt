@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/">
+		<file>editor/index.js</file>
+	</qresource>
+</RCC>
