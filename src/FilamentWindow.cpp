@@ -21,7 +21,7 @@ static const Vertex TRIANGLE_VERTICES[3] = {
 
 static constexpr uint16_t TRIANGLE_INDICES[3] = { 0, 1, 2 };
 
-FilamentWindow::FilamentWindow() {
+FilamentWindow::FilamentWindow(): curFrame(0) {
     doInitialize();
 }
 
@@ -41,9 +41,9 @@ void FilamentWindow::doInitialize() {
     view = engine->createView();
     scene = engine->createScene();
 
-    view->setClearOptions({.clearColor = {0.1f, 0.1f, 1.0f, 1.0f}, .clear = true});
+    view->setClearOptions({.clearColor = {0.1f, 1.0f, 0.1f, 1.0f}, .clear = true});
     view->setPostProcessingEnabled(false);
-    utils::Entity renderable = utils::EntityManager::get().create();
+    renderable = utils::EntityManager::get().create();
 
     auto vertexBuffer = filament::VertexBuffer::Builder()
             .vertexCount(3)
@@ -63,11 +63,10 @@ void FilamentWindow::doInitialize() {
     filament::Material* material = filament::Material::Builder()
             .package((void*) BAKED_COLOR_PACKAGE, sizeof(BAKED_COLOR_PACKAGE))
             .build(*engine);
-//    filament::MaterialInstance* materialInstance = material->createInstance();
-
+    materialInstance = material->createInstance();
     filament::RenderableManager::Builder(1)
             .boundingBox({{ -1, -1, -1 }, { 1, 1, 1 }})
-            .material(0, material->getDefaultInstance())
+            .material(0, materialInstance)
             .geometry(0, filament::RenderableManager::PrimitiveType::TRIANGLES, vertexBuffer, indexBuffer, 0, 3)
             .receiveShadows(false)
             .castShadows(false)
@@ -85,4 +84,18 @@ void FilamentWindow::updateFrame() {
         render->render(view);
         render->endFrame();
     }
+}
+
+void FilamentWindow::updateParameter(QJsonArray json) {
+    materialInstance->setParameter("texture",
+       filament::math::float4(json[0].toDouble(), json[1].toDouble(), json[2].toDouble(), json[3].toDouble()));
+    updateRotation();
+    updateFrame();
+}
+
+void FilamentWindow::updateRotation() {
+    curFrame += 1;
+    filament::TransformManager& tr = engine->getTransformManager();
+    filament::math::mat4f curMat = filament::math::mat4f::rotation(curFrame * 0.1, filament::math::float3{0, 0, 1});
+    tr.setTransform(tr.getInstance(renderable), curMat);
 }

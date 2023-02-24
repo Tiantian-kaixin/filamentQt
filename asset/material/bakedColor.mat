@@ -1,5 +1,10 @@
 material {
     name : bakedColor,
+    parameters : [
+    {
+       type : float4,
+       name : texture
+    }],
     requires : [
         color
     ],
@@ -10,6 +15,6 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor = getColor();
+        material.baseColor = materialParams.texture;
     }
 }

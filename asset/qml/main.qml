@@ -1,5 +1,7 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.12
 import filamentWindow 1.0
+import "./"
 
 FilamentWindow {
     id: mainWindow
@@ -7,12 +9,12 @@ FilamentWindow {
     width: 600
     height: 600
     title: qsTr("Filament Window")
-    property var tt: Timer {
+    Timer {
         interval: 500;
         running: true;
         repeat: true
         onTriggered: {
-            mainWindow.updateFrame();
+            mainWindow.updateParameter([Math.random(), Math.random(), Math.random(), 1]);
         }
     }
 }

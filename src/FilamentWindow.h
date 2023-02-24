@@ -18,16 +18,18 @@
 #include "filament/IndexBuffer.h"
 #include "filament/RenderTarget.h"
 #include "filament/Viewport.h"
-#include "QWindow"
+#include "filament/TransformManager.h"
 #include <QDebug>
+#include <QQuickWindow>
+#include <QJsonArray>
 
-class FilamentWindow : public QWindow
+class FilamentWindow : public QQuickWindow
 {
     Q_OBJECT
 public:
     FilamentWindow();
     ~FilamentWindow();
-    Q_INVOKABLE void updateFrame();
+    Q_INVOKABLE void updateParameter(QJsonArray json);
 
 protected:
     void doInitialize();
@@ -40,6 +42,12 @@ private:
     filament::Camera* camera;
     filament::View* view;
     filament::Scene* scene;
+    utils::Entity renderable;
+    filament::MaterialInstance* materialInstance;
+    int curFrame;
+
+    void updateFrame();
+    void updateRotation();
 };
 
 #endif //NODEGRAPH_FILAMENTWINDOW_H
