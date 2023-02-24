@@ -19,6 +19,15 @@
 #include "filament/RenderTarget.h"
 #include "filament/Viewport.h"
 #include "filament/TransformManager.h"
+#include "filament/IndirectLight.h"
+#include "camutils/Manipulator.h"
+#include "utils/NameComponentManager.h"
+#include "gltfio/AssetLoader.h"
+#include "gltfio/ResourceLoader.h"
+#include "gltfio/MaterialProvider.h"
+#include "image/KtxBundle.h"
+#include "image/KtxUtility.h"
+#include <fstream>
 #include <QDebug>
 #include <QQuickWindow>
 #include <QJsonArray>
@@ -34,6 +43,9 @@ public:
 protected:
     void doInitialize();
     void doFree();
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
 
 private:
     filament::Engine* engine;
@@ -44,10 +56,15 @@ private:
     filament::Scene* scene;
     utils::Entity renderable;
     filament::MaterialInstance* materialInstance;
+    filament::camutils::Manipulator<float>* manipulator;
     int curFrame;
 
     void updateFrame();
     void updateRotation();
+    void loadShader();
+    void loadModelGlb(std::string filename);
+    void loadLight(std::string filename);
+    std::vector<uint8_t> loadFileBuffer(std::string filename, uint64_t& size);
 };
 
 #endif //NODEGRAPH_FILAMENTWINDOW_H
