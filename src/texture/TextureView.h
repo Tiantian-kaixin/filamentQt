@@ -20,11 +20,13 @@ public:
     void setTexturesHeight(const int& scaleMode);
     int texturesHeight() { return m_texturesHeight; }
     Q_SLOT void ready();
+    Q_INVOKABLE void mouseEvent(float x, float y, int state);
 
 private:
     // texture的宽高
     int m_texturesWidth = 300;
     int m_texturesHeight = 300;
+    GLuint textureID;
     RenderThread* renderThread;
     GLuint genTextureID();
 };

@@ -9,7 +9,7 @@
 class TextureNode : public QObject, public QSGSimpleTextureNode {
 Q_OBJECT
 public:
-    explicit TextureNode(QQuickWindow* window);
+    explicit TextureNode(QQuickWindow* window, GLuint id, const QSize& size);
     ~TextureNode() override;
 
     Q_SIGNAL void textureInUse();

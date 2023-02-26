@@ -39,9 +39,7 @@ public:
     ~RenderThread();
     void initialize();
     void doFree();
-    void mousePressEvent(QMouseEvent *);
-    void mouseReleaseEvent(QMouseEvent *);
-    void mouseMoveEvent(QMouseEvent *);
+    Q_SLOT void mouseEvent(float x, float y, int state);
     Q_SIGNAL void textureReady(int id, const QSize& size);
     Q_SLOT void renderNext();
     intptr_t renderTargetID;

@@ -1,7 +1,7 @@
 #include "TextureNode.h"
 
-TextureNode::TextureNode(QQuickWindow* window)
-    : m_id(0), m_size(0, 0), m_texture(nullptr), m_window(window) {
+TextureNode::TextureNode(QQuickWindow* window, GLuint id, const QSize& size)
+    : m_id(id), m_size(0, 0), m_texture(nullptr), m_window(window) {
   // Our texture node must have a texture, so use the default 0 texture.
   m_texture = m_window->createTextureFromId(m_id, QSize(300, 300));
   setTexture(m_texture);

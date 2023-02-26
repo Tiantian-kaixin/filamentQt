@@ -1,6 +1,6 @@
 #include "TextureView.h"
 
-TextureView::TextureView(QQuickItem *parent) : QQuickItem(parent){
+TextureView::TextureView(QQuickItem *parent) : QQuickItem(parent), textureID(0){
     setFlag(QQuickItem::ItemHasContents, true);
     renderThread = new RenderThread();
 }
@@ -15,7 +15,7 @@ QSGNode* TextureView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* dat
         return nullptr;
     }
     if (!node) {
-        node = new TextureNode(window());
+        node = new TextureNode(window(), textureID, QSize(300, 300));
         connect(renderThread, &RenderThread::textureReady, node, &TextureNode::newTexture, Qt::DirectConnection);
         connect(node, &TextureNode::pendingNewTexture, window(), &QQuickWindow::update, Qt::QueuedConnection);
         connect(window(), &QQuickWindow::beforeRendering, node, &TextureNode::prepareNode, Qt::DirectConnection);
@@ -28,7 +28,8 @@ QSGNode* TextureView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* dat
 }
 
 void TextureView::ready() {
-    renderThread->renderTargetID = genTextureID();
+    textureID = genTextureID();
+    renderThread->renderTargetID = textureID;
     renderThread->initialize();
     renderThread->start();
     update();
@@ -58,4 +59,9 @@ void TextureView::setTexturesWidth(const int& texturesWidth){
 
 void TextureView::setTexturesHeight(const int& texturesHeight){
     m_texturesHeight = texturesHeight;
+}
+
+void TextureView::mouseEvent(float x, float y, int state) {
+    QMetaObject::invokeMethod(renderThread, "mouseEvent", Qt::QueuedConnection,
+                              Q_ARG(float, x), Q_ARG(float, y), Q_ARG(int, state));
 }

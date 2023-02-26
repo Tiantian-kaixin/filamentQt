@@ -12,9 +12,21 @@ Window {
     title: qsTr("Filament Window")
     TextureView {
         id: textureView
-        anchors.left: parent.left
-        anchors.top: parent.top
+        anchors.centerIn: parent
         width: 300
         height: 300
+    }
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true;
+        onPressed: {
+            textureView.mouseEvent(mouse.x, mouse.y, 0)
+        }
+        onReleased: {
+            textureView.mouseEvent(mouse.x, mouse.y, 2)
+        }
+        onPositionChanged: {
+            textureView.mouseEvent(mouse.x, mouse.y, 1)
+        }
     }
 }

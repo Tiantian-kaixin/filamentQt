@@ -6,7 +6,7 @@
 static constexpr uint8_t BAKED_COLOR_PACKAGE[] = {
 #include "../asset/material/bakedColor.inc"
 };
-RenderThread::RenderThread(): isInitialized(false) {
+RenderThread::RenderThread(): isInitialized(false), curFrame(0) {
 }
 
 RenderThread::~RenderThread() {
@@ -21,7 +21,7 @@ void RenderThread::initialize() {
     view = engine->createView();
     scene = engine->createScene();
     manipulator = filament::camutils::Manipulator<float>::Builder()
-            .viewport(600, 600)
+            .viewport(300, 300)
             .targetPosition(0, 0, 0)
             .orbitHomePosition(0, 0, 6)
             .upVector(0, 1, 0)
@@ -32,7 +32,7 @@ void RenderThread::initialize() {
     view->setPostProcessingEnabled(false);
     view->setScene(scene);
     view->setCamera(camera);
-    view->setViewport(filament::Viewport(0, 0, 1200, 1200));
+    view->setViewport(filament::Viewport(0, 0, 300, 300));
     updateRenderTarget(renderTargetID);
     loadModelGlb("/Users/tiantian/Downloads/LvBu.glb");
     loadLight("/Users/tiantian/Downloads/default_env_ibl.ktx");
@@ -40,18 +40,18 @@ void RenderThread::initialize() {
 }
 
 void RenderThread::updateRenderTarget(intptr_t textureID) {
-    swapChain = engine->createSwapChain(1200, 1200, filament::SwapChain::CONFIG_TRANSPARENT);
+    swapChain = engine->createSwapChain(300, 300, filament::SwapChain::CONFIG_TRANSPARENT);
     auto colorTexture = filament::Texture::Builder()
-            .width(1200)
-            .height(1200)
+            .width(300)
+            .height(300)
             .levels(1)
             .usage(filament::Texture::Usage::COLOR_ATTACHMENT | filament::Texture::Usage::SAMPLEABLE)
             .format(filament::Texture::InternalFormat::RGBA8)
             .import(textureID)
             .build(*engine);
     auto depthTexture = filament::Texture::Builder()
-            .width(1200)
-            .height(1200)
+            .width(300)
+            .height(300)
             .levels(1)
             .usage(filament::Texture::Usage::DEPTH_ATTACHMENT)
             .format(filament::Texture::InternalFormat::DEPTH24)
@@ -112,14 +112,14 @@ void RenderThread::updateFrame() {
         qDebug() << "updateFrame" << endl;
         render->render(view);
         render->endFrame();
-        emit textureReady(renderTargetID, *new QSize(600, 600));
+        emit textureReady(renderTargetID, *new QSize(300, 300));
     }
 }
 
 void RenderThread::renderNext() {
     updateFrame();
     sleep(0.5);
-    emit textureReady(renderTargetID, *new QSize(600, 600));
+    emit textureReady(renderTargetID, *new QSize(300, 300));
 }
 
 std::vector<uint8_t> RenderThread::loadFileBuffer(std::string filename, uint64_t& size) {
@@ -135,15 +135,14 @@ std::vector<uint8_t> RenderThread::loadFileBuffer(std::string filename, uint64_t
     return buffer;
 }
 
-void RenderThread::mousePressEvent(QMouseEvent *mouseEvent) {
-    manipulator->grabBegin(mouseEvent->x(), -mouseEvent->y(), false);
-};
-void RenderThread::mouseReleaseEvent(QMouseEvent *mouseEvent) {
-    manipulator->grabEnd();
-};
-void RenderThread::mouseMoveEvent(QMouseEvent *mouseEvent) {
-    manipulator->grabUpdate(mouseEvent->x(), -mouseEvent->y());
-    updateFrame();
+void RenderThread::mouseEvent(float x, float y, int state) {
+    if (state == 0) {
+        manipulator->grabBegin(x, -y, false);
+    }else if (state == 1) {
+        manipulator->grabUpdate(x, -y);
+    } else if (state == 2) {
+        manipulator->grabEnd();
+    }
 };
 
 void RenderThread::run() {
