@@ -5,7 +5,7 @@
 #include <QFileOpenEvent>
 #include <QGuiApplication>
 #include <QSurfaceFormat>
-#include "src/FilamentWindow.h"
+#include "src/texture/TextureView.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat( fmt );
 
     QQmlApplicationEngine engine;
-    qmlRegisterType<FilamentWindow>("filamentWindow", 1, 0, "FilamentWindow");
+    qmlRegisterType<TextureView>("filament", 1, 0, "TextureView");
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl) QCoreApplication::exit(-1);

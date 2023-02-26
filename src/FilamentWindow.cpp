@@ -4,10 +4,6 @@
 
 #include "FilamentWindow.h"
 
-static constexpr uint8_t BAKED_COLOR_PACKAGE[] = {
-#include "./asset/material/bakedColor.inc"
-};
-
 struct Vertex {
     filament::math::float2 position;
     uint32_t color;
@@ -52,7 +48,7 @@ void FilamentWindow::doInitialize() {
     view->setPostProcessingEnabled(false);
     view->setScene(scene);
     view->setCamera(camera);
-    view->setViewport(filament::Viewport(0, 0, 600, 600));
+    view->setViewport(filament::Viewport(0, 0, 1200, 1200));
     loadModelGlb("/Users/tiantian/Downloads/cube.glb");
     loadLight("/Users/tiantian/Downloads/default_env_ibl.ktx");
 }
@@ -116,7 +112,6 @@ void FilamentWindow::loadShader() {
             .build(*engine);
     indexBuffer->setBuffer(*engine, filament::IndexBuffer::BufferDescriptor(TRIANGLE_INDICES, 6, nullptr));
     filament::Material* material = filament::Material::Builder()
-            .package((void*) BAKED_COLOR_PACKAGE, sizeof(BAKED_COLOR_PACKAGE))
             .build(*engine);
     materialInstance = material->createInstance();
     materialInstance->setParameter("texture", filament::math::float4(1, 1, 1, 1));

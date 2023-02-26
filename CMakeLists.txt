@@ -56,7 +56,7 @@ endif ()
 add_subdirectory(./src/thirdParty/Ace3DEngine)
 include_directories(${ACE_3D_ENGINE_INCLUDE_DIR})
 
-file(GLOB CORE_SOURCE_FILES src/*.*)
+file(GLOB CORE_SOURCE_FILES src/*.* src/*/*.*)
 list(APPEND ALL_SOURCE_FILES
         ${CORE_SOURCE_FILES})
 add_executable(${PROJECT_NAME} "main.cpp" ${ALL_SOURCE_FILES} "asset/resource.qrc")
