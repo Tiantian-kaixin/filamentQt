@@ -10,7 +10,6 @@ Q_OBJECT
 public:
     explicit TextureView(QQuickItem* parent = nullptr);
     virtual ~TextureView();
-    Q_INVOKABLE int getTextureID();
     QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
 
     Q_PROPERTY(int texturesWidth READ texturesWidth WRITE setTexturesWidth)

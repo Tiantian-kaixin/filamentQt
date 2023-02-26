@@ -58,7 +58,6 @@ void FilamentWindow::loadModelGlb(std::string filename) {
     uint64_t size;
     std::vector<uint8_t> buffer = loadFileBuffer(filename, size);
     filament::Material* material = filament::Material::Builder()
-            .package((void*) BAKED_COLOR_PACKAGE, sizeof(BAKED_COLOR_PACKAGE))
             .build(*engine);
     materialInstance = material->createInstance();
 
