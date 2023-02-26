@@ -15,7 +15,7 @@ QSGNode* TextureView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* dat
         return nullptr;
     }
     if (!node) {
-        node = new TextureNode(window(), textureID, QSize(300, 300));
+        node = new TextureNode(window(), textureID, QSize(m_texturesWidth, m_texturesHeight));
         connect(renderThread, &RenderThread::textureReady, node, &TextureNode::newTexture, Qt::DirectConnection);
         connect(node, &TextureNode::pendingNewTexture, window(), &QQuickWindow::update, Qt::QueuedConnection);
         connect(window(), &QQuickWindow::beforeRendering, node, &TextureNode::prepareNode, Qt::DirectConnection);

@@ -24,8 +24,8 @@ public:
 
 private:
     // texture的宽高
-    int m_texturesWidth = 300;
-    int m_texturesHeight = 300;
+    int m_texturesWidth = 600;
+    int m_texturesHeight = 600;
     GLuint textureID;
     RenderThread* renderThread;
     GLuint genTextureID();

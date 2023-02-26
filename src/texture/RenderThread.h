@@ -57,6 +57,8 @@ private:
     filament::MaterialInstance* materialInstance;
     filament::camutils::Manipulator<float>* manipulator;
     int curFrame;
+    int texturesWidth = 600;
+    int texturesHeight = 600;
 
     void updateFrame();
     void updateRotation();

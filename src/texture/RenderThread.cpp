@@ -21,7 +21,7 @@ void RenderThread::initialize() {
     view = engine->createView();
     scene = engine->createScene();
     manipulator = filament::camutils::Manipulator<float>::Builder()
-            .viewport(300, 300)
+            .viewport(texturesWidth, texturesHeight)
             .targetPosition(0, 0, 0)
             .orbitHomePosition(0, 0, 6)
             .upVector(0, 1, 0)
@@ -32,7 +32,7 @@ void RenderThread::initialize() {
     view->setPostProcessingEnabled(false);
     view->setScene(scene);
     view->setCamera(camera);
-    view->setViewport(filament::Viewport(0, 0, 300, 300));
+    view->setViewport(filament::Viewport(0, 0, texturesWidth, texturesHeight));
     updateRenderTarget(renderTargetID);
     loadModelGlb("/Users/tiantian/Downloads/LvBu.glb");
     loadLight("/Users/tiantian/Downloads/default_env_ibl.ktx");
@@ -40,18 +40,18 @@ void RenderThread::initialize() {
 }
 
 void RenderThread::updateRenderTarget(intptr_t textureID) {
-    swapChain = engine->createSwapChain(300, 300, filament::SwapChain::CONFIG_TRANSPARENT);
+    swapChain = engine->createSwapChain(texturesWidth, texturesHeight, filament::SwapChain::CONFIG_TRANSPARENT);
     auto colorTexture = filament::Texture::Builder()
-            .width(300)
-            .height(300)
+            .width(texturesWidth)
+            .height(texturesHeight)
             .levels(1)
             .usage(filament::Texture::Usage::COLOR_ATTACHMENT | filament::Texture::Usage::SAMPLEABLE)
             .format(filament::Texture::InternalFormat::RGBA8)
             .import(textureID)
             .build(*engine);
     auto depthTexture = filament::Texture::Builder()
-            .width(300)
-            .height(300)
+            .width(texturesWidth)
+            .height(texturesHeight)
             .levels(1)
             .usage(filament::Texture::Usage::DEPTH_ATTACHMENT)
             .format(filament::Texture::InternalFormat::DEPTH24)
@@ -112,14 +112,14 @@ void RenderThread::updateFrame() {
         qDebug() << "updateFrame" << endl;
         render->render(view);
         render->endFrame();
-        emit textureReady(renderTargetID, *new QSize(300, 300));
+        emit textureReady(renderTargetID, *new QSize(texturesWidth, texturesHeight));
     }
 }
 
 void RenderThread::renderNext() {
     updateFrame();
     sleep(0.5);
-    emit textureReady(renderTargetID, *new QSize(300, 300));
+    emit textureReady(renderTargetID, *new QSize(texturesWidth, texturesHeight));
 }
 
 std::vector<uint8_t> RenderThread::loadFileBuffer(std::string filename, uint64_t& size) {

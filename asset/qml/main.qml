@@ -13,8 +13,8 @@ Window {
     TextureView {
         id: textureView
         anchors.centerIn: parent
-        width: 300
-        height: 300
+        width: 600
+        height: 600
     }
     MouseArea {
         anchors.fill: parent
