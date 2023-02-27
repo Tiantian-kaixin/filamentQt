@@ -38,7 +38,6 @@ void TextureView::ready() {
 GLuint TextureView::genTextureID() {
     GLuint textures;
     window()->openglContext()->functions()->glGenTextures(1, &textures);
-    window()->openglContext()->functions()->glActiveTexture(GL_TEXTURE0);
     window()->openglContext()->functions()->glBindTexture(GL_TEXTURE_2D, textures);
     QString filePath = "/Users/tiantian/Desktop/resize_compress.png";
     auto* qImage = new QImage(filePath);

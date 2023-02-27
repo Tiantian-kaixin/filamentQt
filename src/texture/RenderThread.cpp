@@ -16,6 +16,7 @@ RenderThread::~RenderThread() {
 void RenderThread::initialize() {
     engine = filament::Engine::create();
     render = engine->createRenderer();
+    render->setClearOptions({.clearColor = {1.0f, 0.1f, 0.1f, 1.0f}, .clear = true, .discard = true});
 //    swapChain = engine->createSwapChain((void*)renderTargetID);
     camera = engine->createCamera(utils::EntityManager::get().create());
     view = engine->createView();
@@ -32,6 +33,8 @@ void RenderThread::initialize() {
     view->setPostProcessingEnabled(false);
     view->setScene(scene);
     view->setCamera(camera);
+    view->setSampleCount(4);
+    view->setBlendMode(filament::View::BlendMode::OPAQUE);
     view->setViewport(filament::Viewport(0, 0, texturesWidth, texturesHeight));
     updateRenderTarget(renderTargetID);
     loadModelGlb("/Users/tiantian/Downloads/LvBu.glb");
@@ -117,9 +120,8 @@ void RenderThread::updateFrame() {
 }
 
 void RenderThread::renderNext() {
+    sleep(static_cast<unsigned long>(0.5));
     updateFrame();
-    sleep(0.5);
-    emit textureReady(renderTargetID, *new QSize(texturesWidth, texturesHeight));
 }
 
 std::vector<uint8_t> RenderThread::loadFileBuffer(std::string filename, uint64_t& size) {
