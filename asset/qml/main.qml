@@ -20,6 +20,7 @@ Window {
         anchors.fill: parent
         hoverEnabled: true;
         onPressed: {
+            console.log("pressed ========================")
             textureView.mouseEvent(mouse.x, mouse.y, 0)
         }
         onReleased: {

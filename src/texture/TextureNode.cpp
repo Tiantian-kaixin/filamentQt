@@ -13,6 +13,7 @@ TextureNode::~TextureNode() { delete m_texture; }
 void TextureNode::newTexture(GLuint id, const QSize& size) {
     m_mutex.lock();
     m_id = id;
+    qDebug() << "newTexture id : " << id;
     m_size = size;
     m_mutex.unlock();
     Q_EMIT pendingNewTexture();
@@ -26,13 +27,14 @@ void TextureNode::prepareNode() {
     m_mutex.lock();
     int newId = m_id;
     QSize size = m_size;
-    m_id = 0;
+//    m_id = 0;
     m_mutex.unlock();
+    qDebug() << "prepareNode newId : " << newId;
     if (newId) {
         delete m_texture;
         m_texture = m_window->createTextureFromId(newId, size, QQuickWindow::TextureHasAlphaChannel);
         setTexture(m_texture);
         markDirty(DirtyMaterial);
+        Q_EMIT textureInUse();
     }
-    Q_EMIT textureInUse();
 }

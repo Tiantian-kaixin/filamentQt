@@ -14,7 +14,20 @@ RenderThread::~RenderThread() {
 }
 
 void RenderThread::initialize() {
-    engine = filament::Engine::create();
+    isInitialized = true;
+}
+
+void RenderThread::init3DEnv() {
+    if (is3DEnvInitialized) {
+        return;
+    }
+    is3DEnvInitialized = true;
+//    auto *backend = (filament::Engine::Backend*)malloc(sizeof(filament::Engine::Backend));
+//    *backend = filament::Engine::Backend::OPENGL;
+//    auto platform = filament::backend::DefaultPlatform::create(backend);
+//    platform->createDriver({.sharedGLContext = openglContext, .createContextInner = false}, false);
+    engine = filament::Engine::create(filament::Engine::Backend::OPENGL, nullptr, openglContext->shareContext()->shareHandle());
+//    engine = filament::Engine::create();
     render = engine->createRenderer();
     render->setClearOptions({.clearColor = {1.0f, 0.1f, 0.1f, 1.0f}, .clear = true, .discard = true});
 //    swapChain = engine->createSwapChain((void*)renderTargetID);
@@ -120,7 +133,9 @@ void RenderThread::updateFrame() {
 }
 
 void RenderThread::renderNext() {
-    sleep(static_cast<unsigned long>(0.5));
+    qDebug() << "renderNext++++++";
+    init3DEnv();
+    sleep(0.5);
     updateFrame();
 }
 

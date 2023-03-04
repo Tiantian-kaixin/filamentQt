@@ -31,6 +31,8 @@
 #include <QQuickWindow>
 #include <QJsonArray>
 #include "QThread"
+#include <QOpenGLContext>
+#include <QOffscreenSurface>
 
 class RenderThread: public QThread {
 Q_OBJECT
@@ -38,12 +40,15 @@ public:
     RenderThread();
     ~RenderThread();
     void initialize();
+    void init3DEnv();
     void doFree();
     Q_SLOT void mouseEvent(float x, float y, int state);
     Q_SIGNAL void textureReady(intptr_t id, const QSize& size);
     Q_SLOT void renderNext();
     intptr_t renderTargetID;
-    bool isInitialized;
+    bool isInitialized = false;
+    bool is3DEnvInitialized = false;
+    void setOpenGlContext(QOpenGLContext* glContext) { openglContext = glContext; }
 protected:
     void run() override;
 private:
@@ -59,6 +64,7 @@ private:
     int curFrame;
     int texturesWidth = 600;
     int texturesHeight = 600;
+    QOpenGLContext *openglContext = nullptr;
 
     void updateFrame();
     void updateRotation();

@@ -6,16 +6,26 @@ TextureView::TextureView(QQuickItem *parent) : QQuickItem(parent), textureID(0){
 }
 
 TextureView::~TextureView() {
+    delete renderThread;
 }
 
 QSGNode* TextureView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data) {
     auto* node = dynamic_cast<TextureNode*>(oldNode);
     if (!renderThread->isInitialized) {
+        QOpenGLContext* current = window()->openglContext();
+        current->doneCurrent();
+        auto openGlContext = new QOpenGLContext();
+        openGlContext->setFormat(current->format());
+        openGlContext->setShareContext(current);
+        openGlContext->create();
+        renderThread->setOpenGlContext(openGlContext);
+        openGlContext->moveToThread(renderThread);
+        current->makeCurrent(window());
         QMetaObject::invokeMethod(this, "ready");
         return nullptr;
     }
     if (!node) {
-        node = new TextureNode(window(), textureID, QSize(m_texturesWidth, m_texturesHeight));
+        node = new TextureNode(window(), 0, QSize(m_texturesWidth, m_texturesHeight));
         connect(renderThread, &RenderThread::textureReady, node, &TextureNode::newTexture, Qt::DirectConnection);
         connect(node, &TextureNode::pendingNewTexture, window(), &QQuickWindow::update, Qt::QueuedConnection);
         connect(window(), &QQuickWindow::beforeRendering, node, &TextureNode::prepareNode, Qt::DirectConnection);
@@ -29,7 +39,8 @@ QSGNode* TextureView::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* dat
 
 void TextureView::ready() {
     textureID = genTextureID();
-    renderThread->renderTargetID = textureID;
+    renderThread->renderTargetID = textureID;//window()->winId();
+//    renderThread->moveToThread(renderThread);
     renderThread->initialize();
     renderThread->start();
     update();
