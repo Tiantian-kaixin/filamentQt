@@ -13,8 +13,7 @@ Window {
     TextureView {
         id: textureView
         anchors.centerIn: parent
-        width: 500
-        height: 500
+        anchors.fill: parent
     }
     MouseArea {
         anchors.fill: parent
@@ -28,6 +27,14 @@ Window {
         }
         onPositionChanged: {
             textureView.mouseEvent(mouse.x, mouse.y, 1)
+        }
+    }
+    Button {
+        text: "click me"
+        anchors.top: parent.top
+        anchors.left: parent.left
+        onPressed: {
+
         }
     }
 }

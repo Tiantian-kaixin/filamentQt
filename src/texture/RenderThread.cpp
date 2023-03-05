@@ -3,6 +3,7 @@
 //
 
 #include "RenderThread.h"
+#include <QtPlatformHeaders/QCocoaNativeContext>
 static constexpr uint8_t BAKED_COLOR_PACKAGE[] = {
 #include "../asset/material/bakedColor.inc"
 };
@@ -22,12 +23,8 @@ void RenderThread::init3DEnv() {
         return;
     }
     is3DEnvInitialized = true;
-//    auto *backend = (filament::Engine::Backend*)malloc(sizeof(filament::Engine::Backend));
-//    *backend = filament::Engine::Backend::OPENGL;
-//    auto platform = filament::backend::DefaultPlatform::create(backend);
-//    platform->createDriver({.sharedGLContext = openglContext, .createContextInner = false}, false);
-    engine = filament::Engine::create(filament::Engine::Backend::OPENGL, nullptr, openglContext->shareContext()->shareHandle());
-//    engine = filament::Engine::create();
+    auto native = reinterpret_cast<QCocoaNativeContext*>(openglContext->nativeHandle().data())->context();
+    engine = filament::Engine::create(filament::Engine::Backend::OPENGL, nullptr, native);
     render = engine->createRenderer();
     render->setClearOptions({.clearColor = {1.0f, 0.1f, 0.1f, 1.0f}, .clear = true, .discard = true});
 //    swapChain = engine->createSwapChain((void*)renderTargetID);
